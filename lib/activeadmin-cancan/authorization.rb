@@ -9,10 +9,13 @@ ActiveAdmin::Namespace.class_eval do
     # Register the resource
     register_resource_controller(config)
 
-    if ActiveAdmin::VERSION =~ /^0\.[5-9]/
+    # ActiveAdmin >= 0.5 introduce a new way to define its DSL.
+    if ActiveAdmin::VERSION =~ /^0\.[1-4]/
+      resource_dsl.prepare_menu(config)
+    elsif ActiveAdmin::VERSION =~ /^0\.[5-9]/
       ActiveAdmin::ResourceDSL.new(config).prepare_menu5
     else
-      resource_dsl.prepare_menu(config)
+      ActiveAdmin::ResourceDSL.new(config, resource_class).prepare_menu5
     end
 
     config = old_register(resource_class, options, &block)
